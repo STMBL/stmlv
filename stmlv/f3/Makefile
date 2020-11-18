@@ -1,4 +1,4 @@
-#OPT = -O1
+OPT = -O3
 
 #config size in kB
 CONF_SIZE = 4
