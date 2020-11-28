@@ -1,0 +1,68 @@
+load io
+io0.rt_prio = 1
+load dq
+dq0.rt_prio = 2
+load curpid
+curpid0.rt_prio = 3
+load idq
+idq0.rt_prio = 5
+load svm
+svm0.rt_prio = 6
+load pwm
+pwm0.rt_prio = 7
+load sim
+sim0.rt_prio = 11
+
+dq0.u = io0.iu
+dq0.v = io0.iv
+dq0.w = io0.iw
+dq0.pos = sim0.vel
+dq0.mode = 2
+
+curpid0.cmd_mode = 1
+curpid0.id_fb = dq0.d
+curpid0.iq_fb = dq0.q
+curpid0.max_cur = 10
+curpid0.pwm_volt = io0.dc
+curpid0.r = 0.2
+curpid0.ld = 0.00035
+curpid0.lq = 0.00035
+curpid0.ki = 1
+curpid0.ksp = 0
+
+idq0.d = curpid0.ud
+idq0.q = curpid0.uq
+idq0.pos = sim0.vel
+idq0.mode = 2
+
+svm0.u = idq0.u
+svm0.v = idq0.v
+svm0.w = idq0.w
+svm0.mode = 1
+svm0.udc = io0.dc
+
+pwm0.u = svm0.su
+pwm0.v = svm0.sv
+pwm0.w = svm0.sw
+pwm0.dc = io0.dc
+
+load uvw
+uvw0.rt_prio = 1.5
+uvw0.u = io0.MISO
+uvw0.v = io0.SCK
+uvw0.w = io0.MOSI
+uvw0.amp = 1
+
+dq0.pos = uvw0.pos
+idq0.pos = uvw0.pos
+
+load mfault
+mfault0.rt_prio = 5.5
+mfault0.dc = io0.dc
+mfault0.iu = io0.iu
+mfault0.iv = io0.iv
+mfault0.iw = io0.iw
+mfault0.temp = io0.temp
+curpid0.max_cur = mfault0.max_cur_out
+curpid0.en = mfault0.en_out
+pwm0.en = mfault0.en_out
