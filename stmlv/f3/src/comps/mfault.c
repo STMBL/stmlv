@@ -24,6 +24,7 @@ HAL_PIN(max_cur_out);
 
 
 HAL_PIN(max_cur);
+HAL_PIN(abs_max_cur);
 HAL_PIN(max_dc);
 HAL_PIN(min_dc);
 HAL_PIN(max_temp);
@@ -45,7 +46,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct mfault_pin_ctx_t *pins = (struct mfault_pin_ctx_t *)pin_ptr;
   PIN(en_out) = PIN(en);
 
-  if(MAX3(ABS(PIN(iu)), ABS(PIN(iv)), ABS(PIN(iw))) > PIN(max_cur) * 2.0 || PIN(dc) < PIN(min_dc) || PIN(temp) > PIN(max_temp)){
+  if(MAX3(ABS(PIN(iu)), ABS(PIN(iv)), ABS(PIN(iw))) > PIN(abs_max_cur) || PIN(dc) < PIN(min_dc) || PIN(temp) > PIN(max_temp)){
     PIN(en_out) = 0.0;
   }
   else if(MAX3(ABS(PIN(iu)), ABS(PIN(iv)), ABS(PIN(iw))) > PIN(max_cur) * 1.1 || PIN(dc) > PIN(max_dc)){

@@ -231,12 +231,13 @@ int main(void)
   TIM1->CCER |= TIM_CCER_CC1E | TIM_CCER_CC1NE | TIM_CCER_CC2E | TIM_CCER_CC2NE | TIM_CCER_CC3E | TIM_CCER_CC3NE; // channel enable
   
   TIM1->BDTR |= 50; // 50/144e6 = 340ns deadtime
-  TIM1->BDTR |= TIM_BDTR_OSSI; // disable state
-  TIM1->BDTR |= TIM_BDTR_OSSR; // enable state
-
+  // TIM1->BDTR |= TIM_BDTR_OSSI; // disable state
+  // TIM1->BDTR |= TIM_BDTR_OSSR; // enable state
+  TIM1->BDTR |= 0xa << TIM_BDTR_BKF_Pos; // brk filter
+  TIM1->BDTR |= TIM_BDTR_BKP; // brk polarity high
+  TIM1->BDTR |= TIM_BDTR_BKE; // brk enable
+  
   TIM1->RCR = 5; // 15khz pwm -> 5khz rt
-
-
 
 
   // opamp gpio
@@ -273,9 +274,9 @@ int main(void)
 
 
   // comp , dac1_ch1 -> comp -> tim1_brk2
-  COMP1->CSR |= COMP_CSR_COMPxOUTSEL_1 | COMP_CSR_COMPxINSEL_2 | COMP_CSR_COMPxEN;
-  COMP2->CSR |= COMP_CSR_COMPxOUTSEL_1 | COMP_CSR_COMPxINSEL_2 | COMP_CSR_COMPxEN;
-  COMP4->CSR |= COMP_CSR_COMPxOUTSEL_1 | COMP_CSR_COMPxINSEL_2 | COMP_CSR_COMPxEN;
+  COMP1->CSR |= COMP_CSR_COMPxOUTSEL_0 | COMP_CSR_COMPxINSEL_2 | COMP_CSR_COMPxEN;
+  COMP2->CSR |= COMP_CSR_COMPxOUTSEL_0 | COMP_CSR_COMPxINSEL_2 | COMP_CSR_COMPxEN;
+  COMP4->CSR |= COMP_CSR_COMPxOUTSEL_0 | COMP_CSR_COMPxINSEL_2 | COMP_CSR_COMPxEN;
 
 
   // dac gpio
@@ -288,7 +289,7 @@ int main(void)
     delay_counter--;
   }
 
-  DAC1->DHR12R1 = (0.1 + 0.02) / 3.3 * 4096; // TODO fix
+  DAC1->DHR12R1 = (0.1 + 0.1) / 3.3 * 4096.0; // TODO fix
   DAC1->CR |= DAC_CR_EN1;
 
 
