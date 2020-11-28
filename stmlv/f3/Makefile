@@ -1,4 +1,6 @@
-OPT = -O3
+OPT = -O1
+
+ADDRESS ?= 0x08004000
 
 #config size in kB
 CONF_SIZE = 4

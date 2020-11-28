@@ -21,7 +21,7 @@
 #define SHUNT_OP_GAIN (16.0)
 
 #define CURRENT_OFFSET (ADC_REF / (SHUNT_PULLUP_R + SHUNT_SERIES_R) * SHUNT_SERIES_R / SHUNT_R)
-#define CURRENT_SCALE (1.0 / SHUNT_OP_GAIN / SHUNT_R)
+#define CURRENT_SCALE (-1.0 / SHUNT_OP_GAIN / SHUNT_R)
 
 #define AIN_SCALE ((560.0 + 1000.0) / 1000.0)
 #define DC_SCALE ((22000.0 + 22000.0 + 1500.0) / 1500.0)
@@ -69,6 +69,16 @@ struct adc34_struct_t{
 #define DC (8)
 
 #define VREF (18)
+
+
+
+#define NTC_TEMP0 (25.0)
+#define NTC_TEMP1 (80.0)
+
+#define NTC_R0 (4700.0)
+#define NTC_B (3539.0)
+
+#define NTC_PULLUP (1000.0)
 
 /*
 

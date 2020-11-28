@@ -144,13 +144,13 @@ COMMAND("reset", reset, "reset STMLV");
 
 void TIM1_UP_TIM16_IRQHandler() {
   TIM1->SR &= ~TIM_SR_UIF;
-  GPIOD->ODR |= GPIO_PIN_2;
+  // GPIOD->ODR |= GPIO_PIN_2;
   hal_run_rt();
   if(TIM1->SR & TIM_SR_UIF) {
     hal_stop();
     hal.hal_state = RT_TOO_LONG;
   }
-  GPIOD->ODR &= ~GPIO_PIN_2;
+  // GPIOD->ODR &= ~GPIO_PIN_2;
 }
 
 
@@ -239,7 +239,6 @@ int main(void)
 
   TIM1->RCR = 5; // 15khz pwm -> 5khz rt
 
-  TIM1->CR1 |= TIM_CR1_CEN;
 
 
 
@@ -256,11 +255,24 @@ int main(void)
     delay_counter--;
   }
   
+  OPAMP_HandleTypeDef hopamp;
+  hopamp.Instance = OPAMP1;
+  hopamp.State =  HAL_OPAMP_STATE_READY;
+  HAL_OPAMP_SelfCalibrate(&hopamp);
+
+  hopamp.Instance = OPAMP2;
+  hopamp.State =  HAL_OPAMP_STATE_READY;
+  HAL_OPAMP_SelfCalibrate(&hopamp);
+
+  hopamp.Instance = OPAMP3;
+  hopamp.State =  HAL_OPAMP_STATE_READY;
+  HAL_OPAMP_SelfCalibrate(&hopamp);
+
+
   // opamp, pga 16x
   OPAMP1->CSR |= OPAMP_CSR_PGGAIN_1 | OPAMP_CSR_PGGAIN_0 | OPAMP_CSR_VMSEL_1 | OPAMP_CSR_VPSEL_1 | OPAMP_CSR_VPSEL_0 | OPAMP_CSR_OPAMPxEN;
   OPAMP2->CSR |= OPAMP_CSR_PGGAIN_1 | OPAMP_CSR_PGGAIN_0 | OPAMP_CSR_VMSEL_1 | OPAMP_CSR_VPSEL_1 | OPAMP_CSR_VPSEL_0 | OPAMP_CSR_OPAMPxEN;
   OPAMP3->CSR |= OPAMP_CSR_PGGAIN_1 | OPAMP_CSR_PGGAIN_0 | OPAMP_CSR_VMSEL_1 | OPAMP_CSR_VPSEL_1 | OPAMP_CSR_VPSEL_0 | OPAMP_CSR_OPAMPxEN;
-  // TODO calibration
 
 
   // comp , dac1_ch1 -> comp -> tim1_brk2
@@ -313,6 +325,55 @@ int main(void)
   delay_counter = 10 * SystemCoreClock / 1000000;
   while(delay_counter != 0U){
     delay_counter--;
+  }
+
+  // calibrate
+  ADC1->CR &= (~ADC_CR_ADCALDIF);
+  ADC1->CR |= ADC_CR_ADCAL;
+
+  ADC2->CR &= (~ADC_CR_ADCALDIF);
+  ADC2->CR |= ADC_CR_ADCAL;
+
+  ADC3->CR &= (~ADC_CR_ADCALDIF);
+  ADC3->CR |= ADC_CR_ADCAL;
+
+  ADC4->CR &= (~ADC_CR_ADCALDIF);
+  ADC4->CR |= ADC_CR_ADCAL;
+  
+  // timeout 10ms
+  delay_counter = 10000 * SystemCoreClock / 1000000;
+  while(((ADC1->CR & ADC_CR_ADCAL)) & (delay_counter != 0U)){
+    delay_counter--;
+  }
+  if(delay_counter == 0){
+    GPIOC->ODR |= GPIO_ODR_15;
+  }
+
+  // timeout 10ms
+  delay_counter = 10000 * SystemCoreClock / 1000000;
+  while(((ADC2->CR & ADC_CR_ADCAL)) & (delay_counter != 0U)){
+    delay_counter--;
+  }
+  if(delay_counter == 0){
+    GPIOC->ODR |= GPIO_ODR_15;
+  }
+
+  // timeout 10ms
+  delay_counter = 10000 * SystemCoreClock / 1000000;
+  while(((ADC3->CR & ADC_CR_ADCAL)) & (delay_counter != 0U)){
+    delay_counter--;
+  }
+  if(delay_counter == 0){
+    GPIOC->ODR |= GPIO_ODR_15;
+  }
+
+  // timeout 10ms
+  delay_counter = 10000 * SystemCoreClock / 1000000;
+  while(((ADC4->CR & ADC_CR_ADCAL)) & (delay_counter != 0U)){
+    delay_counter--;
+  }
+  if(delay_counter == 0){
+    GPIOC->ODR |= GPIO_ODR_15;
   }
 
   // 3 disc. conversions
@@ -455,10 +516,13 @@ int main(void)
 
   hal_parse("flashloadconf");
   hal_parse("loadconf");
+
+  TIM1->CR1 |= TIM_CR1_CEN;
+  
   hal_parse("start");
 
-  GPIOC->MODER |= GPIO_MODER_MODER15_0;
-  GPIOD->MODER |= GPIO_MODER_MODER2_0;
+  // GPIOC->MODER |= GPIO_MODER_MODER15_0;
+  // GPIOD->MODER |= GPIO_MODER_MODER2_0;
 
   /* USER CODE END 2 */
 

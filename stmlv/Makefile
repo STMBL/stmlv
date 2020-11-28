@@ -34,14 +34,14 @@ all_btburn: force_look
 all_flash: force_look
 	$(MAKE) -C f3/ ADDRESS=$(F3_ADDRESS) all_flash
 
-all: f3
+all: f3 f3_boot
 
 # Target: clean project
 #
 clean: force_look
 	@echo Cleaning project:
 	rm -rf build
-	#@$(MAKE) -C f3_boot/ clean
+	@$(MAKE) -C f3_boot/ clean
 	@$(MAKE) -C f3/ clean
 
 force_look:

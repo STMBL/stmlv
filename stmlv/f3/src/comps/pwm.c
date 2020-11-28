@@ -26,17 +26,27 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct pwm_ctx_t * ctx = (struct pwm_ctx_t *)ctx_ptr;
   struct pwm_pin_ctx_t *pins = (struct pwm_pin_ctx_t *)pin_ptr;
 
-  if(PIN(en) > 0.0){
-    TIM1->CCR3 = CLAMP(PIN(u) / PIN(dc) * PWM_RES, 0, PIN(max) * PWM_RES);
-    TIM1->CCR2 = CLAMP(PIN(v) / PIN(dc) * PWM_RES, 0, PIN(max) * PWM_RES);
-    TIM1->CCR1 = CLAMP(PIN(w) / PIN(dc) * PWM_RES, 0, PIN(max) * PWM_RES);
-    TIM1->BDTR |= TIM_BDTR_MOE;
-  }
-  else{
-    TIM1->CCR1 = 0;
-    TIM1->CCR2 = 0;
-    TIM1->CCR3 = 0;
-    TIM1->BDTR &= ~TIM_BDTR_MOE;
+  switch((int) PIN(en)){
+    case -1: // active short
+      TIM1->BDTR |= TIM_BDTR_MOE;
+      TIM1->CCR1 = 0;
+      TIM1->CCR2 = 0;
+      TIM1->CCR3 = 0;
+    break;
+    
+    case 0: // disabled, floating, undervoltage, 
+      TIM1->BDTR &= ~TIM_BDTR_MOE;
+      TIM1->CCR1 = 0;
+      TIM1->CCR2 = 0;
+      TIM1->CCR3 = 0;
+    break;
+
+    case 1: // enabled
+      TIM1->BDTR |= TIM_BDTR_MOE;
+      TIM1->CCR3 = CLAMP(PIN(u) / PIN(dc) * PWM_RES, 0, PIN(max) * PWM_RES);
+      TIM1->CCR2 = CLAMP(PIN(v) / PIN(dc) * PWM_RES, 0, PIN(max) * PWM_RES);
+      TIM1->CCR1 = CLAMP(PIN(w) / PIN(dc) * PWM_RES, 0, PIN(max) * PWM_RES);
+    break;
   }
 }
 
