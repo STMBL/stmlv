@@ -10,15 +10,15 @@ f3: force_look
 
 #build f3 bootloader
 f3_boot: force_look
-	$(MAKE) -C f3_boot/ APP_ADDRESS=$(F3_ADDRESS)
+	$(MAKE) -C f3_boot/ ADDRESS=0x08000000 APP_ADDRESS=$(F3_ADDRESS)
 
 #flash f3 bootloader using stlink
 f3_boot_flash: force_look
-	$(MAKE) -C f3_boot/ APP_ADDRESS=$(F3_ADDRESS) flash 
+	$(MAKE) -C f3_boot/ ADDRESS=0x08000000 APP_ADDRESS=$(F3_ADDRESS) flash 
 
 #flash f3 bootloader using df-util
 f3_boot_btburn: force_look
-	$(MAKE) -C f3_boot/ APP_ADDRESS=$(F3_ADDRESS) btburn
+	$(MAKE) -C f3_boot/ ADDRESS=0x08000000 APP_ADDRESS=$(F3_ADDRESS) btburn
 
 #flash f3 firmware using stlink
 flash: force_look

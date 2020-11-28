@@ -190,9 +190,6 @@ int main(void)
 
   /* USER CODE END SysInit */
 
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-
   // gpio clock
   RCC->AHBENR |= RCC_AHBENR_GPIOAEN | RCC_AHBENR_GPIOBEN | RCC_AHBENR_GPIOCEN | RCC_AHBENR_GPIODEN | RCC_AHBENR_GPIOEEN | RCC_AHBENR_GPIOFEN;
   volatile uint32_t delay_counter = 1 * SystemCoreClock / 1000000;
@@ -518,7 +515,7 @@ int main(void)
   hal_parse("loadconf");
 
   TIM1->CR1 |= TIM_CR1_CEN;
-  
+
   hal_parse("start");
 
   // GPIOC->MODER |= GPIO_MODER_MODER15_0;

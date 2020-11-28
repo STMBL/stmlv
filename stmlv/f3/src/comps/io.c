@@ -51,7 +51,7 @@ extern volatile struct adc34_struct_t adc34_buffer[3];
 
 static void hw_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr){
   // red led
-  GPIOC->MODER |= GPIO_MODER_MODER15_0;
+    GPIOC->MODER |= GPIO_MODER_MODER15_0;
 }
 
 static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
