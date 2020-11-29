@@ -211,7 +211,7 @@ spi3 + cs solder jumper to fb1
 misc
  adc dclink
  adc ntc_fet
- error_led
+ pc15 error_led
 
 
 fb0
