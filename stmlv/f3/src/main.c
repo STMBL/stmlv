@@ -158,6 +158,8 @@ volatile struct adc12_struct_t adc12_buffer[3];
 
 volatile struct adc34_struct_t adc34_buffer[3];
 
+volatile uint32_t ws_buffer[3 * 3 * 8 + 3];
+
 /* USER CODE END 0 */
 
 /**
@@ -213,6 +215,7 @@ int main(void)
   GPIOB->AFR[1] |= (GPIO_AF6_TIM1 << GPIO_AFRH_AFRH5_Pos) | (GPIO_AF6_TIM1 << GPIO_AFRH_AFRH6_Pos) | (GPIO_AF4_TIM1 << GPIO_AFRH_AFRH7_Pos);
 
 
+// TODO TIM1->CR1.ARPE
   RCC->APB2ENR |= RCC_APB2ENR_TIM1EN; // clock en
   TIM1->CR1 |= TIM_CR1_CMS_0 | TIM_CR1_CMS_1; // center aligned 3
 

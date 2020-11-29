@@ -1,0 +1,91 @@
+stm32f303rc 64pin
+
+pwm
+ pa8 tim1_ch1
+ pa9 tim1_ch2
+ pa10 tim1_ch3
+ pb13 tim1_ch1n
+ pb14 tim1_ch2n
+ pb15 tim1_ch3n
+ pb12 tim1_bkin sto
+
+cur
+ pa1 op1_+, comp1_+
+ pa2 op1_out
+ pa7 op2_+, comp2_+
+ pa6 op2_out
+ pb0 op3_+, comp4_+
+ pb1 op3_out
+ pa4 dac_out1
+
+usb
+ pa11 -
+ pa12 +
+
+swd 
+ pa13 swdio
+ pa14 swclk
+ nrst
+
+fb0
+ A
+  pc6 tim3_ch1
+  pb11 uart3_rx
+  pb4 spi1_miso
+ B
+  pc7 tim3_ch2
+  pb3 spi1_ck (uart2_tx)
+  b_en
+ C
+  pc8 tim3_ch3
+  pb10 uart3_tx
+  pb5 spi1_mosi
+  c_en pc9 tim3_ch4
+
+fb1
+ A
+  pa15 tim8_ch1
+  pb7 uart1_rx
+  pc11 spi3_miso
+  adc
+ B
+  pb8 tim8_ch2
+  pc10 spi3_ck
+  adc
+  b_en tim2_ch4
+ C
+  pb9 tim8_ch3
+  pb6 uart1_tx
+  pc12 spi3_mosi
+  c_en tim2_ch1
+
+io
+ adc2_5 uart1_tx hall
+ adc2_11 uart1_rx hall
+ adc hall
+ adc ntc_mot
+spi3 + cs solder jumper to fb1
+
+misc
+ adc dclink
+ adc ntc_fet
+ error_led
+
+
+
+
+fb0
+dma1_ch2 dma1_ch3 + dma1_ch6 + (dma1_ch7)
+uart3 + spi1 + tim3 + (uart2)
+
+fb1
+dma1_ch4 dma1_ch5 + dma2_ch1 dma2_ch2 
+uart1 + spi3 + tim8
++ tim2
+sin/cos
+
+adc
+dma1_ch1 dma2_ch5
+adc1 adc3
+
+

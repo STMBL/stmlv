@@ -53,7 +53,7 @@ extern volatile struct adc34_struct_t adc34_buffer[3];
 static void hw_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr){
   struct io_pin_ctx_t *pins = (struct io_pin_ctx_t *)pin_ptr;
   // red led
-    GPIOC->MODER |= GPIO_MODER_MODER15_0;
+    // GPIOC->MODER |= GPIO_MODER_MODER15_0;
     PIN(dac) = DAC1->DHR12R1;
 }
 
@@ -86,16 +86,16 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   PIN(MOSI) = (ioc & (1 << 12)) > 0;
   PIN(CS) = (iod & (1 << 2)) > 0;
 
-  if(PIN(led_red) > 0.0){
-    GPIOC->ODR |= GPIO_ODR_15;
-  }
-  else{
-    GPIOC->ODR &= ~(GPIO_ODR_15);
-  }
+  // if(PIN(led_red) > 0.0){
+  //   GPIOC->ODR |= GPIO_ODR_15;
+  // }
+  // else{
+  //   GPIOC->ODR &= ~(GPIO_ODR_15);
+  // }
 
-  if((COMP1->CSR & COMP_CSR_COMPxOUT) | (COMP2->CSR & COMP_CSR_COMPxOUT) | (COMP4->CSR & COMP_CSR_COMPxOUT)){
-    GPIOC->ODR |= GPIO_ODR_15;
-  }
+  // if((COMP1->CSR & COMP_CSR_COMPxOUT) | (COMP2->CSR & COMP_CSR_COMPxOUT) | (COMP4->CSR & COMP_CSR_COMPxOUT)){
+  //   GPIOC->ODR |= GPIO_ODR_15;
+  // }
 
   if(PIN(offset_counter) < 1000){
     PIN(iu_offset) += PIN(iu) / 50.0;
