@@ -234,7 +234,7 @@ int main(void)
   TIM1->CCER |= TIM_CCER_CC1E | TIM_CCER_CC1NE | TIM_CCER_CC2E | TIM_CCER_CC2NE | TIM_CCER_CC3E | TIM_CCER_CC3NE; // channel enable
   
   TIM1->BDTR |= 50; // 50/144e6 = 340ns deadtime
-  // TIM1->BDTR |= TIM_BDTR_OSSI; // disable state
+  TIM1->BDTR |= TIM_BDTR_OSSI; // force low in disable state (brk)
   // TIM1->BDTR |= TIM_BDTR_OSSR; // enable state
   TIM1->BDTR |= 0xa << TIM_BDTR_BKF_Pos; // brk filter
   TIM1->BDTR |= TIM_BDTR_BKP; // brk polarity high
