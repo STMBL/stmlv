@@ -19,7 +19,7 @@ extern volatile uint32_t ws_buffer[3 * 3 * 8 + 3];
 static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr){
   struct ws_pin_ctx_t *pins = (struct ws_pin_ctx_t *)pin_ptr;
   // red led
-  PIN(tim) = 72000000.0 * 0.00000038;
+  PIN(tim) = 72000000.0 * 0.00000035;
 }
 
 static void hw_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr){
