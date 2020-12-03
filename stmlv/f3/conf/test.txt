@@ -66,3 +66,19 @@ mfault0.temp = io0.temp
 curpid0.max_cur = mfault0.max_cur_out
 curpid0.en = mfault0.en_out
 pwm0.en = mfault0.en_out
+
+load ws
+ws0.rt_prio = 10
+
+load intp
+intp0.rt_prio = 1.6
+intp0.pos_in = uvw0.pos
+
+uvw0.p0 = 3
+uvw0.p1 = 4
+uvw0.p3 = 5
+uvw0.p7 = 0
+uvw0.p6 = 1
+uvw0.p4 = 2
+uvw0.p2 = -1
+uvw0.p5 = -1
