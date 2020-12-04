@@ -23,6 +23,7 @@ HAL_PIN(cos);
 HAL_PIN(vref3);
 HAL_PIN(vref4);
 HAL_PIN(dc);
+HAL_PIN(phase_volt);
 HAL_PIN(temp);
 HAL_PIN(a0);
 HAL_PIN(a1);
@@ -51,7 +52,8 @@ extern volatile struct adc34_struct_t adc34_buffer[3];
 
 static void hw_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr){
   struct io_pin_ctx_t *pins = (struct io_pin_ctx_t *)pin_ptr;
-  PIN(dac) = DAC1->DHR12R1;
+  PIN(dac) = 800;
+  DAC1->DHR12R1 = PIN(dac);
 }
 
 static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
@@ -63,9 +65,12 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   uint16_t ioc = GPIOC->IDR;
   uint16_t iod = GPIOD->IDR;
 
+  DAC1->DHR12R1 = PIN(dac);
+
   PIN(sin) = V_DIFF(adc12_buffer[0].sin, 1);
   PIN(cos) = V_DIFF(adc12_buffer[0].cos, 1);
   PIN(dc) = VOLT(adc12_buffer[0].dc) * DC_SCALE;
+  PIN(phase_volt) = PIN(dc) / 2.0 * 1.15 * 0.95;
   PIN(temp) = NTC_MULT * (adc12_buffer[0].temp - NTC_ADD) + NTC_TEMP0;
   PIN(a0) = VOLT(adc12_buffer[0].a0) * AIN_SCALE;
   PIN(a1) = VOLT(adc12_buffer[0].a1) * AIN_SCALE;
@@ -84,13 +89,12 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   PIN(CS) = (iod & (1 << 2)) > 0;
 
   if(PIN(offset_counter) < 1000){
-    PIN(iu_offset) += PIN(iu) / 50.0;
-    PIN(iv_offset) += PIN(iv) / 50.0;
-    PIN(iw_offset) += PIN(iw) / 50.0;
+    PIN(iu_offset) += PIN(iu) / 25.0;
+    PIN(iv_offset) += PIN(iv) / 25.0;
+    PIN(iw_offset) += PIN(iw) / 25.0;
     PIN(offset_counter)++;
   }
 
-  DAC1->DHR12R1 = PIN(dac);
 }
 
 hal_comp_t io_comp_struct = {

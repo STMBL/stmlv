@@ -17,6 +17,8 @@ HAL_PIN(iw);
 HAL_PIN(temp);
 HAL_PIN(mot_temp);
 
+HAL_PIN(hv_error);
+HAL_PIN(vel);
 
 HAL_PIN(en_out);
 HAL_PIN(scale);
@@ -29,12 +31,14 @@ HAL_PIN(max_dc);
 HAL_PIN(min_dc);
 HAL_PIN(max_temp);
 HAL_PIN(max_mot_temp);
+HAL_PIN(max_vel);
 
 static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct mfault_ctx_t * ctx = (struct mfault_ctx_t *)ctx_ptr;
   struct mfault_pin_ctx_t *pins = (struct mfault_pin_ctx_t *)pin_ptr;
 
   PIN(max_cur) = 25.0;
+  PIN(abs_max_cur) = 40.0;
   PIN(max_dc) = 75.0;
   PIN(min_dc) = 18.0;
   PIN(max_temp) = 70.0;
@@ -55,6 +59,7 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
 
   PIN(scale) = MAX(MIN(1.0 - (PIN(temp) - PIN(max_temp) + 10.0) / 10.0, 1.0), 0.0);
   PIN(scale) = MAX(MIN(1.0 - (PIN(mot_temp) - PIN(max_mot_temp) + 10.0) / 10.0, PIN(scale)), 0.0);
+  PIN(scale) = MAX(MIN(1.0 - (ABS(PIN(vel)) - PIN(max_vel) + 10) / 10.0, PIN(scale)), 0.0);
 
   PIN(max_cur_out) = PIN(max_cur) * PIN(scale);
 }

@@ -14,7 +14,8 @@ HAL_PIN(w);
 HAL_PIN(dc);
 HAL_PIN(max);
 
-HAL_PIN(en_out);
+HAL_PIN(error);
+HAL_PIN(state);
 
 static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct pwm_ctx_t * ctx = (struct pwm_ctx_t *)ctx_ptr;
@@ -27,29 +28,48 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct pwm_ctx_t * ctx = (struct pwm_ctx_t *)ctx_ptr;
   struct pwm_pin_ctx_t *pins = (struct pwm_pin_ctx_t *)pin_ptr;
 
-  if(PIN(en) == 0.0 || !(TIM1->BDTR & TIM_BDTR_MOE)){
-    PIN(en_out) = 0.0;
-  }
-
-  switch((int) PIN(en)){
+  switch((int) PIN(state)){
     case -1: // active short
-      TIM1->BDTR |= TIM_BDTR_MOE;
+      if(!(TIM1->BDTR & TIM_BDTR_MOE)){ // hw overcurrent
+        PIN(error) = 1.0;
+      }
+      if(PIN(en) == 0.0){ // disable
+        PIN(state) = 0.0;
+      }
+      if(PIN(en) > 0.0){ // enable
+        PIN(state) = 1.0;
+      }
       TIM1->CCR1 = 0;
       TIM1->CCR2 = 0;
       TIM1->CCR3 = 0;
     break;
 
-    case 0: // disabled, floating, undervoltage, 
+    case 0: // disable, floating, undervoltage,
       TIM1->BDTR &= ~TIM_BDTR_MOE;
       TIM1->CCR1 = 0;
       TIM1->CCR2 = 0;
       TIM1->CCR3 = 0;
+      PIN(error) = 0.0;
+     
+      if(PIN(en) > 0.0){ // enable
+        PIN(state) = 1.0;        
+        TIM1->BDTR |= TIM_BDTR_MOE;  
+      }
+      if(PIN(en) < 0.0){ // active short
+        PIN(state) = -1.0;
+        TIM1->BDTR |= TIM_BDTR_MOE;  
+      }
     break;
 
-    case 1: // enabled
-      if(PIN(en_out) == 0.0){
-        TIM1->BDTR |= TIM_BDTR_MOE;
-        PIN(en_out) = 1.0;
+    case 1: // enable
+      if(!(TIM1->BDTR & TIM_BDTR_MOE)){ // hw overcurrent
+        PIN(error) = 1.0;
+      }
+      if(PIN(en) == 0.0){ // disable
+        PIN(state) = 0.0;
+      }
+      if(PIN(en) < 0.0){ // active short
+        PIN(state) = -1.0;
       }
       TIM1->CCR3 = CLAMP(PIN(u) / PIN(dc) * PWM_RES, 0, PIN(max) * PWM_RES);
       TIM1->CCR2 = CLAMP(PIN(v) / PIN(dc) * PWM_RES, 0, PIN(max) * PWM_RES);

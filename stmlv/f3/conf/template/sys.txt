@@ -60,6 +60,12 @@ uvw0.w = io0.MOSI
 uvw0.amp = 1
 
 flux0.pos_in = uvw0.pos
+flux0.ua = idq0.a
+flux0.ub = idq0.b
+flux0.ia = dq0.a
+flux0.ib = dq0.b
+flux0.r = curpid0.r
+flux0.l = curpid0.ld
 
 mfault0.dc = io0.dc
 mfault0.iu = io0.iu
@@ -68,3 +74,4 @@ mfault0.iw = io0.iw
 mfault0.temp = io0.temp
 curpid0.en = mfault0.en_out
 pwm0.en = mfault0.en_out
+mfault0.max_vel = 20
