@@ -1,17 +1,9 @@
 load io
 io0.rt_prio = 1
-load dq
-dq0.rt_prio = 2
-load uvw 
-uvw0.rt_prio = 2.1
-load flux
-flux0.rt_prio = 2.2
 load curpid
 curpid0.rt_prio = 3
-load idq
-idq0.rt_prio = 5
 load mfault
-mfault0.rt_prio = 5.5
+mfault0.rt_prio = 4
 load svm
 svm0.rt_prio = 6
 load pwm
@@ -21,31 +13,23 @@ ws0.rt_prio = 10
 load sim
 sim0.rt_prio = 11
 
-dq0.u = io0.iu
-dq0.v = io0.iv
-dq0.w = io0.iw
-dq0.pos = flux0.pos
-dq0.mode = 2
-
+curpid0.iu = io0.iu
+curpid0.iv = io0.iv
+curpid0.iw = io0.iw
+curpid0.mode = 2
 curpid0.cmd_mode = 1
-curpid0.id_fb = dq0.d
-curpid0.iq_fb = dq0.q
 curpid0.max_cur = mfault0.max_cur_out
-curpid0.pwm_volt = io0.phase_volt
+curpid0.max_volt = io0.phase_volt
 curpid0.r = 0.05
 curpid0.ld = 0.00006
 curpid0.lq = 0.00006
 curpid0.ki = 1
+curpid0.kp = 0.01
 curpid0.ksp = 0
 
-idq0.d = curpid0.ud
-idq0.q = curpid0.uq
-idq0.pos = flux0.pos
-idq0.mode = 2
-
-svm0.u = idq0.u
-svm0.v = idq0.v
-svm0.w = idq0.w
+svm0.u = curpid0.uu
+svm0.v = curpid0.uv
+svm0.w = curpid0.uw
 svm0.mode = 1
 svm0.udc = io0.dc
 
@@ -58,14 +42,6 @@ uvw0.u = io0.MISO
 uvw0.v = io0.SCK
 uvw0.w = io0.MOSI
 uvw0.amp = 1
-
-flux0.pos_in = uvw0.pos
-flux0.ua = idq0.a
-flux0.ub = idq0.b
-flux0.ia = dq0.a
-flux0.ib = dq0.b
-flux0.r = curpid0.r
-flux0.l = curpid0.ld
 
 mfault0.dc = io0.dc
 mfault0.iu = io0.iu

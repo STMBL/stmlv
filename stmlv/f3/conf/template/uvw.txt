@@ -1,0 +1,13 @@
+load uvw
+uvw0.rt_prio = 2
+
+curpid0.pos_in = uvw0.pos
+
+uvw0.p0 = 3
+uvw0.p1 = 4
+uvw0.p3 = 5
+uvw0.p7 = 0
+uvw0.p6 = 1
+uvw0.p4 = 2
+uvw0.p2 = -1
+uvw0.p5 = -1
