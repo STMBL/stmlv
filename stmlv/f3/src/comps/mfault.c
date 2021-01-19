@@ -20,6 +20,7 @@ HAL_PIN(mot_temp);
 HAL_PIN(hv_error);
 HAL_PIN(vel);
 
+HAL_PIN(error);
 HAL_PIN(en_out);
 HAL_PIN(scale);
 HAL_PIN(max_cur_out);
@@ -33,12 +34,22 @@ HAL_PIN(max_temp);
 HAL_PIN(max_mot_temp);
 HAL_PIN(max_vel);
 
+void disable(char *ptr) {
+  hal_parse("mfault0.en = 0");
+}
+COMMAND("disable", disable, "disable STMLV");
+
+void enable(char *ptr) {
+  hal_parse("mfault0.en = 1");
+}
+COMMAND("enable", enable, "enable STMLV");
+
 static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   // struct mfault_ctx_t * ctx = (struct mfault_ctx_t *)ctx_ptr;
   struct mfault_pin_ctx_t *pins = (struct mfault_pin_ctx_t *)pin_ptr;
 
-  PIN(max_cur) = 25.0;
-  PIN(abs_max_cur) = 40.0;
+  PIN(max_cur) = 40.0;
+  PIN(abs_max_cur) = 60.0;
   PIN(max_dc) = 75.0;
   PIN(min_dc) = 18.0;
   PIN(max_temp) = 70.0;
@@ -50,11 +61,29 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   struct mfault_pin_ctx_t *pins = (struct mfault_pin_ctx_t *)pin_ptr;
   PIN(en_out) = PIN(en);
 
-  if(MAX3(ABS(PIN(iu)), ABS(PIN(iv)), ABS(PIN(iw))) > PIN(abs_max_cur) || PIN(dc) < PIN(min_dc) || PIN(temp) > PIN(max_temp)){
-    PIN(en_out) = 0.0;
+  if(PIN(en) <= 0.0){
+    PIN(error) = 0;
   }
-  else if(MAX3(ABS(PIN(iu)), ABS(PIN(iv)), ABS(PIN(iw))) > PIN(max_cur) * 1.1 || PIN(dc) > PIN(max_dc)){
+
+  if(MAX3(ABS(PIN(iu)), ABS(PIN(iv)), ABS(PIN(iw))) > PIN(abs_max_cur)){ // short
+    PIN(en_out) = 0.0;
+    PIN(error) = 1;
+  } 
+  if(PIN(dc) < PIN(min_dc)){ // under voltage
+    PIN(en_out) = 0.0;
+    PIN(error) = 2;
+  } 
+  if(PIN(temp) > PIN(max_temp)){ // over temp
+    PIN(en_out) = 0.0;
+    PIN(error) = 3;
+  }
+  if(MAX3(ABS(PIN(iu)), ABS(PIN(iv)), ABS(PIN(iw))) > PIN(max_cur) * 1.1){ // over current
     PIN(en_out) = -1.0;
+    PIN(error) = 4;
+  }
+  if(PIN(dc) > PIN(max_dc)){ // over voltage
+    PIN(en_out) = -1.0;
+    PIN(error) = 5;
   }
 
   PIN(scale) = MAX(MIN(1.0 - (PIN(temp) - PIN(max_temp) + 10.0) / 10.0, 1.0), 0.0);
