@@ -28,6 +28,7 @@ curpid0.kp = 0.1
 curpid0.ksp = 0
 curpid0.kind = 0
 curpid0.ff = 0
+curpid0.com_pos = curpid0.pos_out
 
 svm0.u = curpid0.uu
 svm0.v = curpid0.uv
@@ -52,5 +53,5 @@ mfault0.iw = io0.iw
 mfault0.temp = io0.temp
 curpid0.en = mfault0.en_out
 pwm0.en = mfault0.en_out
-mfault0.max_vel = 300
-mfault0.vel = curpid0.vel
+mfault0.max_vel = 500
+mfault0.vel = curpid0.vel_out

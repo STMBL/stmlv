@@ -1,0 +1,10 @@
+load rl
+rl0.rt_prio = 2
+curpid0.cmd_mode = 0
+curpid0.d_cmd = rl0.ud_cmd
+curpid0.q_cmd = rl0.uq_cmd
+rl0.ud_fb = curpid0.ud
+rl0.uq_fb = curpid0.uq
+rl0.id_fb = curpid0.id
+rl0.iq_fb = curpid0.iq
+mfault0.en = rl0.en_out
