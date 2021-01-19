@@ -46,6 +46,7 @@ HAL_PIN(MISO);
 HAL_PIN(CS);
 
 HAL_PIN(dac);
+HAL_PIN(hw_filter);
 
 extern volatile struct adc12_struct_t adc12_buffer[3];
 extern volatile struct adc34_struct_t adc34_buffer[3];
@@ -54,6 +55,7 @@ static void hw_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr){
   struct io_pin_ctx_t *pins = (struct io_pin_ctx_t *)pin_ptr;
   PIN(dac) = 800;
   DAC1->DHR12R1 = PIN(dac);
+  PIN(hw_filter) = 10;
 }
 
 static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
@@ -66,7 +68,8 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   uint16_t iod = GPIOD->IDR;
 
   DAC1->DHR12R1 = PIN(dac);
-
+  TIM1->BDTR |= ((int) PIN(hw_filter) << TIM_BDTR_BKF_Pos) & TIM_BDTR_BKF_Msk;
+  
   PIN(sin) = V_DIFF(adc12_buffer[0].sin, 1);
   PIN(cos) = V_DIFF(adc12_buffer[0].cos, 1);
   PIN(dc) = VOLT(adc12_buffer[0].dc) * DC_SCALE;
@@ -77,9 +80,12 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   PIN(a2) = VOLT(adc12_buffer[0].a2) * AIN_SCALE;
   PIN(a3) = VOLT(adc12_buffer[0].a3) * AIN_SCALE;
   PIN(a4) = VOLT(adc34_buffer[0].a4) * AIN_SCALE;
-  PIN(iu) = VOLT(adc34_buffer[2].iu) * CURRENT_SCALE + CURRENT_OFFSET - PIN(iu_offset);
-  PIN(iv) = VOLT(adc12_buffer[2].iv) * CURRENT_SCALE + CURRENT_OFFSET - PIN(iv_offset);
-  PIN(iw) = VOLT(adc12_buffer[2].iw) * CURRENT_SCALE + CURRENT_OFFSET - PIN(iw_offset);
+  PIN(iu) = VOLT(adc34_buffer[0].iu + adc34_buffer[1].iu + adc34_buffer[2].iu) / 3.0 * CURRENT_SCALE + CURRENT_OFFSET - PIN(iu_offset);
+  PIN(iv) = VOLT(adc12_buffer[0].iv + adc12_buffer[1].iv + adc12_buffer[2].iv) / 3.0 * CURRENT_SCALE + CURRENT_OFFSET - PIN(iv_offset);
+  PIN(iw) = VOLT(adc12_buffer[0].iw + adc12_buffer[1].iw + adc12_buffer[2].iw) / 3.0 * CURRENT_SCALE + CURRENT_OFFSET - PIN(iw_offset);
+  // PIN(iu) = VOLT(adc34_buffer[2].iu) * CURRENT_SCALE + CURRENT_OFFSET - PIN(iu_offset);
+  // PIN(iv) = VOLT(adc12_buffer[2].iv) * CURRENT_SCALE + CURRENT_OFFSET - PIN(iv_offset);
+  // PIN(iw) = VOLT(adc12_buffer[2].iw) * CURRENT_SCALE + CURRENT_OFFSET - PIN(iw_offset);
   PIN(vref3) = VOLT(adc34_buffer[0].vref3);
   PIN(vref4) = VOLT(adc34_buffer[0].vref4);
   
