@@ -1,0 +1,43 @@
+{
+    "configurations": [
+        {
+            "name": "stmbl",
+            "includePath": [
+                "${workspaceFolder}/../framework/libs/st_hal_f3/inc/**",
+                "${workspaceFolder}/../framework/libs/st_usb_f3/**",
+                "${workspaceFolder}/../framework/libs/CMSIS/Include/**",
+                "${workspaceFolder}/**"
+            ],
+            "defines": [
+                "STM32F303RC",
+                "USE_HAL_DRIVER"
+            ],
+            "macFrameworkPath": [],
+            "compilerPath": "/usr/local/bin/arm-none-eabi-gcc",
+            "cStandard": "gnu11",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "gcc-arm",
+            "compilerArgs": [
+                "-mthumb",
+                "-mcpu=cortex-m7",
+                "-mfpu=fpv5-sp-d16",
+                "-mfloat-abi=hard",
+                "-std=gnu11",
+                "-ffunction-sections",
+                "-fdata-sections",
+                "-Wall",
+                "-Wmaybe-uninitialized",
+                "-Wuninitialized",
+                "-fno-builtin",
+                "-nostartfiles",
+                "-Wfatal-errors",
+                "-fno-strict-aliasing",
+                "-fwrapv",
+                "-lm",
+                "-Wl,-Map=build/fw.map,--cref",
+                "-Wl,--gc-sections"
+            ]
+        }
+    ],
+    "version": 4
+}
