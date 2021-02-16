@@ -26,6 +26,8 @@ HAL_PIN(scale);
 HAL_PIN(max_cur_out);
 
 
+HAL_PIN(acs);
+
 HAL_PIN(max_cur);
 HAL_PIN(abs_max_cur);
 HAL_PIN(max_dc);
@@ -54,6 +56,7 @@ static void nrt_init(void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
   PIN(min_dc) = 18.0;
   PIN(max_temp) = 70.0;
   PIN(max_mot_temp) = 70.0;
+  PIN(acs) = 1.0;
 }
 
 static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
@@ -78,11 +81,11 @@ static void rt_func(float period, void *ctx_ptr, hal_pin_inst_t *pin_ptr) {
     PIN(error) = 3;
   }
   if(MAX3(ABS(PIN(iu)), ABS(PIN(iv)), ABS(PIN(iw))) > PIN(max_cur) * 1.1){ // over current
-    PIN(en_out) = -1.0;
+    PIN(en_out) = -PIN(acs);
     PIN(error) = 4;
   }
   if(PIN(dc) > PIN(max_dc)){ // over voltage
-    PIN(en_out) = -1.0;
+    PIN(en_out) = -PIN(acs);
     PIN(error) = 5;
   }
 
