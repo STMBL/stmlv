@@ -2,7 +2,7 @@ OPT = -O1
 
 #config size in kB
 CONF_SIZE = 4
-CPU = STM32F303RC
+CPUDEF = STM32F303xC
 XTAL_FREQ = 16000000
 
 LDFLAGS += -lc 
