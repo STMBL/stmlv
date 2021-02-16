@@ -10,7 +10,9 @@ XTAL_FREQ = 16000000
 CFLAGS += -DHAL_MAX_PINS=512
 CFLAGS += -DHAL_MAX_COMPS=32
 CFLAGS += -DHAL_MAX_CTX=4096
-LDFLAGS += -lc -specs=nosys.specs
+LDFLAGS += -lc
+# -specs=nosys.specs
+#CFLAGS += -nostdlib
 
 LIBS = ST_HAL
 LIBS += ST_USB

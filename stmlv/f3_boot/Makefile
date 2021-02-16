@@ -5,7 +5,8 @@ CONF_SIZE = 4
 CPU = STM32F303RC
 XTAL_FREQ = 16000000
 
-LDFLAGS += -lc -specs=nosys.specs
+LDFLAGS += -lc 
+#-specs=nosys.specs
 
 LIBS = ST_HAL
 LIBS += CMSIS
